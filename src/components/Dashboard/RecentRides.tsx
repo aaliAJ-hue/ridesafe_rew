@@ -26,14 +26,8 @@ export const RecentRides = ({ rides }: RecentRidesProps) => {
   return (
     <Card className="glass p-6 animate-fade-in">
       <h2 className="text-2xl font-bold mb-4">Recent Rides</h2>
-      {rides.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground mb-2">No rides yet</p>
-          <p className="text-sm text-muted-foreground">Upload your first ride data to get started</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {rides.map((ride, index) => (
+      <div className="space-y-4">
+        {rides.map((ride, index) => (
           <div 
             key={ride.id} 
             className="flex items-center justify-between p-4 rounded-lg bg-card/60 border border-border/50 hover:bg-card/80 transition-all"
@@ -66,9 +60,8 @@ export const RecentRides = ({ rides }: RecentRidesProps) => {
               <p className="text-xs text-muted-foreground">Distance</p>
             </div>
           </div>
-          ))}
-        </div>
-      )}
+        ))}
+      </div>
     </Card>
   );
 };

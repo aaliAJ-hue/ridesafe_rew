@@ -26,14 +26,8 @@ export const Achievements = ({ achievements }: AchievementsProps) => {
   return (
     <Card className="glass p-6 animate-fade-in">
       <h2 className="text-2xl font-bold mb-4">Achievements</h2>
-      {achievements.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground mb-2">No achievements yet</p>
-          <p className="text-sm text-muted-foreground">Start riding safely to unlock achievements</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {achievements.map((achievement, index) => {
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {achievements.map((achievement, index) => {
           const Icon = iconMap[achievement.icon];
           return (
             <div
@@ -72,9 +66,8 @@ export const Achievements = ({ achievements }: AchievementsProps) => {
               )}
             </div>
           );
-          })}
-        </div>
-      )}
+        })}
+      </div>
     </Card>
   );
 };

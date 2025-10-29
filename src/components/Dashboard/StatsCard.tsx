@@ -25,6 +25,12 @@ export const StatsCard = ({ title, value, icon: Icon, trend, color = "primary" }
         <div>
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
           <h3 className="text-3xl font-bold mb-2">{value}</h3>
+          {trend && (
+            <div className={`flex items-center text-sm ${trend.isPositive ? 'text-primary' : 'text-destructive'}`}>
+              <span>{trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%</span>
+              <span className="text-muted-foreground ml-1">vs last week</span>
+            </div>
+          )}
         </div>
         <div className={`${colorClasses[color]} p-3 rounded-lg bg-card`}>
           <Icon className="w-6 h-6" />
