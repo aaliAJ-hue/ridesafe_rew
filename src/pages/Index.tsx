@@ -8,86 +8,40 @@ import { Bike, Coins, Flame } from "lucide-react";
 import heroBike from "@/assets/hero-bike.jpg";
 
 const Index = () => {
-  // Mock data - will be replaced with real API data
-  const currentScore = 87;
+  // Data will be fetched from API - currently empty
+  const currentScore = 0;
   const stats = {
-    totalRides: 156,
-    tokensEarned: 3420,
-    currentStreak: 12
+    totalRides: 0,
+    tokensEarned: 0,
+    currentStreak: 0
   };
 
-  const recentRides = [
-    {
-      id: "1",
-      date: "Today, 2:30 PM",
-      duration: "45 min",
-      distance: "28.5 km",
-      score: 92,
-      tokensEarned: 25,
-      route: "Downtown → Airport"
-    },
-    {
-      id: "2",
-      date: "Yesterday, 8:15 AM",
-      duration: "32 min",
-      distance: "19.2 km",
-      score: 85,
-      tokensEarned: 18,
-      route: "Home → Office"
-    },
-    {
-      id: "3",
-      date: "2 days ago, 6:00 PM",
-      duration: "55 min",
-      distance: "42.8 km",
-      score: 88,
-      tokensEarned: 30,
-      route: "City Center → Suburb"
-    }
-  ];
+  const recentRides: Array<{
+    id: string;
+    date: string;
+    duration: string;
+    distance: string;
+    score: number;
+    tokensEarned: number;
+    route: string;
+  }> = [];
 
-  const leaderboard = [
-    { rank: 1, rider: "SpeedDemon", score: 95, tokens: 8520, rides: 342 },
-    { rank: 2, rider: "SafeRider", score: 94, tokens: 7890, rides: 298 },
-    { rank: 3, rider: "RoadWarrior", score: 92, tokens: 6750, rides: 267 },
-    { rank: 4, rider: "You", score: 87, tokens: 3420, rides: 156 },
-    { rank: 5, rider: "BikeNinja", score: 86, tokens: 5240, rides: 223 },
-    { rank: 6, rider: "ThrottleMaster", score: 85, tokens: 4980, rides: 201 },
-    { rank: 7, rider: "CruiseControl", score: 84, tokens: 4120, rides: 189 },
-    { rank: 8, rider: "GearShifter", score: 82, tokens: 3890, rides: 178 },
-  ];
+  const leaderboard: Array<{
+    rank: number;
+    rider: string;
+    score: number;
+    tokens: number;
+    rides: number;
+  }> = [];
 
-  const achievements = [
-    {
-      id: "1",
-      title: "First Ride",
-      description: "Complete your first safe ride",
-      icon: "shield" as const,
-      unlocked: true
-    },
-    {
-      id: "2",
-      title: "Week Streak",
-      description: "7 days of safe riding",
-      icon: "flame" as const,
-      unlocked: true
-    },
-    {
-      id: "3",
-      title: "Century Club",
-      description: "Complete 100 rides",
-      icon: "target" as const,
-      unlocked: true
-    },
-    {
-      id: "4",
-      title: "Speed Demon",
-      description: "Earn 5000 tokens",
-      icon: "zap" as const,
-      unlocked: false,
-      progress: 68
-    }
-  ];
+  const achievements: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon: "shield" | "flame" | "target" | "zap";
+    unlocked: boolean;
+    progress?: number;
+  }> = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -134,14 +88,12 @@ const Index = () => {
               title="Total Rides"
               value={stats.totalRides}
               icon={Bike}
-              trend={{ value: 12, isPositive: true }}
               color="primary"
             />
             <StatsCard
               title="Tokens Earned"
               value={stats.tokensEarned}
               icon={Coins}
-              trend={{ value: 8, isPositive: true }}
               color="accent"
             />
             <StatsCard
@@ -157,12 +109,12 @@ const Index = () => {
         <ActionButtons />
 
         {/* Achievements */}
-        <Achievements achievements={achievements} />
+        {achievements.length > 0 && <Achievements achievements={achievements} />}
 
         {/* Recent Rides and Leaderboard */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <RecentRides rides={recentRides} />
-          <Leaderboard entries={leaderboard} currentUserRank={4} />
+          <Leaderboard entries={leaderboard} />
         </section>
       </main>
 

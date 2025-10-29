@@ -35,8 +35,15 @@ export const Leaderboard = ({ entries, currentUserRank }: LeaderboardProps) => {
         <Trophy className="w-6 h-6 text-accent" />
         Global Leaderboard
       </h2>
-      <div className="space-y-3">
-        {entries.map((entry, index) => (
+      {entries.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground mb-2">No leaderboard data yet</p>
+          <p className="text-sm text-muted-foreground">Be the first to complete a safe ride</p>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-3">
+            {entries.map((entry, index) => (
           <div
             key={entry.rank}
             className={`flex items-center justify-between p-4 rounded-lg transition-all ${
@@ -65,14 +72,16 @@ export const Leaderboard = ({ entries, currentUserRank }: LeaderboardProps) => {
               <p className="text-xs text-accent">{entry.tokens} SRT</p>
             </div>
           </div>
-        ))}
-      </div>
-      
-      {currentUserRank && currentUserRank > 10 && (
-        <div className="mt-4 p-4 rounded-lg bg-card/60 border-2 border-primary">
-          <p className="text-sm text-muted-foreground">Your Rank</p>
-          <p className="text-2xl font-bold text-primary">#{currentUserRank}</p>
-        </div>
+            ))}
+          </div>
+          
+          {currentUserRank && currentUserRank > 10 && (
+            <div className="mt-4 p-4 rounded-lg bg-card/60 border-2 border-primary">
+              <p className="text-sm text-muted-foreground">Your Rank</p>
+              <p className="text-2xl font-bold text-primary">#{currentUserRank}</p>
+            </div>
+          )}
+        </>
       )}
     </Card>
   );
