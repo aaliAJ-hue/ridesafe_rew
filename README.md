@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+# 🏍️ RideSafe Rewards
 
-## Project info
+*RideSafe Rewards* is an AI + Blockchain platform that motivates bikers to ride safely by turning responsible behavior into real rewards.  
+It uses *machine learning* to analyze ride data and *Web3 smart contracts* to issue tokens for safe riding — blending technology with social impact.
 
-**URL**: https://lovable.dev/projects/e0426173-35b3-4565-a2c4-d85049643839
+---
 
-## How can I edit this code?
+## 🚀 What It Does
 
-There are several ways of editing your application.
+- Riders upload or stream their *telemetry data* (speed, braking, GPS).  
+- An *AI-powered backend* evaluates the data to calculate a *Safety Score (0–100)*.  
+- If the ride meets safety thresholds, a *signed hash* is sent to the blockchain.  
+- A *smart contract* verifies the ride and mints *SafeRide Tokens* to the user’s wallet.  
+- The *frontend dashboard* displays:
+  - Safety score and riding stats  
+  - Tokens earned  
+  - Leaderboard of top safe riders  
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e0426173-35b3-4565-a2c4-d85049643839) and start prompting.
+## 💡 Why We Built It
 
-Changes made via Lovable will be committed automatically to this repo.
+Road accidents due to overspeeding are a growing concern.  
+We wanted to create a fun, fair way to *reward safe riders* using AI for transparency and Web3 for trust.  
+Instead of punishing unsafe driving, RideSafe Rewards encourages positive behavior through gamified incentives.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🧠 Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- *Frontend:* React / Vercel (dark modern UI with live stats and leaderboards)  
+- *Backend:* Node.js + Express (AI/ML scoring and API handling)  
+- *AI/ML:* Custom rule-based scoring model (detects overspeeding, harsh braking, and sharp turns)  
+- *Blockchain:* Ethereum / Polygon smart contract for ride verification and token minting  
+- *Database:* MongoDB / Firebase for ride logs  
+- *Hosting:* Replit (backend), Vercel (frontend)
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## ⚙️ How It Works (Simplified Flow)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e0426173-35b3-4565-a2c4-d85049643839) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Rider uploads ride data → Backend analyzes it using AI.  
+2. Backend calculates score + creates a signed hash.  
+3. Hash sent to blockchain → Smart contract verifies and rewards tokens.  
+4. Frontend updates stats and leaderboard in real time.
