@@ -3,6 +3,7 @@
 *RideSafe Rewards* is an AI + Blockchain platform that motivates bikers to ride safely by turning responsible behavior into real rewards.  
 It uses *machine learning* to analyze ride data and *Web3 smart contracts* to issue tokens for safe riding — blending technology with social impact.
 
+presentation: https://gamma.app/docs/RideSafe-Rewards-2pw77razb4gcgpi
 ---
 
 ## 🚀 What It Does
