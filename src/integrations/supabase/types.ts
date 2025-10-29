@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          achievement_type: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          progress: number | null
+          title: string
+          unlocked: boolean | null
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_type: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          progress?: number | null
+          title: string
+          unlocked?: boolean | null
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_type?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          progress?: number | null
+          title?: string
+          unlocked?: boolean | null
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          wallet_address: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          wallet_address?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      rides: {
+        Row: {
+          avg_speed_kmh: number
+          created_at: string | null
+          distance_km: number
+          duration_minutes: number
+          harsh_acceleration_count: number | null
+          harsh_braking_count: number | null
+          id: string
+          max_speed_kmh: number
+          ride_date: string | null
+          safety_score: number
+          speed_violations_count: number | null
+          telemetry_data: Json | null
+          tokens_earned: number | null
+          user_id: string
+        }
+        Insert: {
+          avg_speed_kmh: number
+          created_at?: string | null
+          distance_km: number
+          duration_minutes: number
+          harsh_acceleration_count?: number | null
+          harsh_braking_count?: number | null
+          id?: string
+          max_speed_kmh: number
+          ride_date?: string | null
+          safety_score: number
+          speed_violations_count?: number | null
+          telemetry_data?: Json | null
+          tokens_earned?: number | null
+          user_id: string
+        }
+        Update: {
+          avg_speed_kmh?: number
+          created_at?: string | null
+          distance_km?: number
+          duration_minutes?: number
+          harsh_acceleration_count?: number | null
+          harsh_braking_count?: number | null
+          id?: string
+          max_speed_kmh?: number
+          ride_date?: string | null
+          safety_score?: number
+          speed_violations_count?: number | null
+          telemetry_data?: Json | null
+          tokens_earned?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rides_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          average_safety_score: number | null
+          best_streak: number | null
+          current_streak: number | null
+          id: string
+          last_ride_date: string | null
+          total_distance_km: number | null
+          total_rides: number | null
+          total_tokens: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          average_safety_score?: number | null
+          best_streak?: number | null
+          current_streak?: number | null
+          id?: string
+          last_ride_date?: string | null
+          total_distance_km?: number | null
+          total_rides?: number | null
+          total_tokens?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          average_safety_score?: number | null
+          best_streak?: number | null
+          current_streak?: number | null
+          id?: string
+          last_ride_date?: string | null
+          total_distance_km?: number | null
+          total_rides?: number | null
+          total_tokens?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

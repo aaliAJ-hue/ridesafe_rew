@@ -1,182 +1,201 @@
-import { SafetyScore } from "@/components/Dashboard/SafetyScore";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { StatsCard } from "@/components/Dashboard/StatsCard";
 import { RecentRides } from "@/components/Dashboard/RecentRides";
+import { SafetyScore } from "@/components/Dashboard/SafetyScore";
 import { Leaderboard } from "@/components/Dashboard/Leaderboard";
 import { ActionButtons } from "@/components/Dashboard/ActionButtons";
 import { Achievements } from "@/components/Dashboard/Achievements";
-import { Bike, Coins, Flame } from "lucide-react";
+import { BikeIcon, LogOut, Bike, Coins, Flame } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import heroBike from "@/assets/hero-bike.jpg";
 
 const Index = () => {
-  // Mock data - will be replaced with real API data
-  const currentScore = 87;
-  const stats = {
-    totalRides: 156,
-    tokensEarned: 3420,
-    currentStreak: 12
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [totalRides, setTotalRides] = useState(0);
+  const [tokensEarned, setTokensEarned] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [recentRides, setRecentRides] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [achievements, setAchievements] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Check authentication
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+        loadUserData(session.user.id);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+        loadUserData(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const loadUserData = async (userId: string) => {
+    try {
+      // Load user stats
+      const { data: stats } = await supabase
+        .from('user_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (stats) {
+        setTotalRides(stats.total_rides);
+        setTokensEarned(stats.total_tokens);
+        setCurrentStreak(stats.current_streak);
+        setCurrentScore(Math.round(stats.average_safety_score));
+      }
+
+      // Load recent rides
+      const { data: rides } = await supabase
+        .from('rides')
+        .select('*')
+        .eq('user_id', userId)
+        .order('ride_date', { ascending: false })
+        .limit(5);
+
+      if (rides) {
+        setRecentRides(rides.map(ride => ({
+          id: ride.id,
+          date: new Date(ride.ride_date).toLocaleDateString(),
+          duration: `${ride.duration_minutes} min`,
+          distance: `${ride.distance_km} km`,
+          score: ride.safety_score,
+          tokensEarned: ride.tokens_earned,
+        })));
+      }
+
+      // Load achievements
+      const { data: userAchievements } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (userAchievements) {
+        setAchievements(userAchievements);
+      }
+
+      // Load leaderboard
+      const { data: leaderboardData } = await supabase.functions.invoke('get-leaderboard');
+      
+      if (leaderboardData?.leaderboard) {
+        setLeaderboard(leaderboardData.leaderboard);
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentRides = [
-    {
-      id: "1",
-      date: "Today, 2:30 PM",
-      duration: "45 min",
-      distance: "28.5 km",
-      score: 92,
-      tokensEarned: 25,
-      route: "Downtown → Airport"
-    },
-    {
-      id: "2",
-      date: "Yesterday, 8:15 AM",
-      duration: "32 min",
-      distance: "19.2 km",
-      score: 85,
-      tokensEarned: 18,
-      route: "Home → Office"
-    },
-    {
-      id: "3",
-      date: "2 days ago, 6:00 PM",
-      duration: "55 min",
-      distance: "42.8 km",
-      score: 88,
-      tokensEarned: 30,
-      route: "City Center → Suburb"
-    }
-  ];
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out successfully");
+    navigate("/auth");
+  };
 
-  const leaderboard = [
-    { rank: 1, rider: "SpeedDemon", score: 95, tokens: 8520, rides: 342 },
-    { rank: 2, rider: "SafeRider", score: 94, tokens: 7890, rides: 298 },
-    { rank: 3, rider: "RoadWarrior", score: 92, tokens: 6750, rides: 267 },
-    { rank: 4, rider: "You", score: 87, tokens: 3420, rides: 156 },
-    { rank: 5, rider: "BikeNinja", score: 86, tokens: 5240, rides: 223 },
-    { rank: 6, rider: "ThrottleMaster", score: 85, tokens: 4980, rides: 201 },
-    { rank: 7, rider: "CruiseControl", score: 84, tokens: 4120, rides: 189 },
-    { rank: 8, rider: "GearShifter", score: 82, tokens: 3890, rides: 178 },
-  ];
-
-  const achievements = [
-    {
-      id: "1",
-      title: "First Ride",
-      description: "Complete your first safe ride",
-      icon: "shield" as const,
-      unlocked: true
-    },
-    {
-      id: "2",
-      title: "Week Streak",
-      description: "7 days of safe riding",
-      icon: "flame" as const,
-      unlocked: true
-    },
-    {
-      id: "3",
-      title: "Century Club",
-      description: "Complete 100 rides",
-      icon: "target" as const,
-      unlocked: true
-    },
-    {
-      id: "4",
-      title: "Speed Demon",
-      description: "Earn 5000 tokens",
-      icon: "zap" as const,
-      unlocked: false,
-      progress: 68
-    }
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <header 
-        className="relative h-[400px] bg-cover bg-center flex items-center justify-center overflow-hidden"
-        style={{ backgroundImage: `url(${heroBike})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-gradient animate-fade-in">
-            RideSafe Rewards
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-6 animate-fade-in">
-            Earn Tokens for Every Safe Ride
-          </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground animate-fade-in">
-            <span className="flex items-center gap-1">
-              <Bike className="w-4 h-4 text-primary" />
-              AI-Powered
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <Coins className="w-4 h-4 text-accent" />
-              Blockchain Verified
-            </span>
-          </div>
+      <section className="relative h-[60vh] overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={heroBike} 
+            alt="Motorbike rider"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background"></div>
         </div>
-      </header>
+        
+        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
+          <div className="absolute top-4 right-4">
+            <Button variant="outline" onClick={handleSignOut} className="gap-2">
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+          </div>
+          
+          <BikeIcon className="w-20 h-20 text-accent mb-6 animate-pulse-glow" />
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 animate-fade-in">
+            <span className="text-gradient">RideSafe</span> Rewards
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            Earn crypto rewards for safe riding. AI-powered analytics meet blockchain transparency.
+          </p>
+        </div>
+      </section>
 
-      {/* Main Dashboard */}
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Score and Stats Section */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
-          <div className="lg:col-span-1 flex justify-center items-start">
-            <div className="glass p-8 rounded-2xl">
-              <SafetyScore score={currentScore} />
-            </div>
+      {/* Action Buttons */}
+      <div className="container mx-auto px-4 -mt-8 relative z-20 mb-12">
+        <ActionButtons userId={user?.id} onRideUploaded={() => loadUserData(user?.id)} />
+      </div>
+
+      {/* Dashboard Content */}
+      <div className="container mx-auto px-4 pb-12 space-y-8">
+        {/* Safety Score and Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="flex justify-center">
+            <SafetyScore score={currentScore} />
           </div>
           
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatsCard
               title="Total Rides"
-              value={stats.totalRides}
+              value={totalRides}
               icon={Bike}
-              trend={{ value: 12, isPositive: true }}
               color="primary"
             />
             <StatsCard
               title="Tokens Earned"
-              value={stats.tokensEarned}
+              value={tokensEarned}
               icon={Coins}
-              trend={{ value: 8, isPositive: true }}
               color="accent"
             />
             <StatsCard
               title="Current Streak"
-              value={`${stats.currentStreak} days`}
+              value={`${currentStreak} days`}
               icon={Flame}
               color="secondary"
             />
           </div>
-        </section>
-
-        {/* Action Buttons */}
-        <ActionButtons />
+        </div>
 
         {/* Achievements */}
-        <Achievements achievements={achievements} />
+        {achievements.length > 0 && (
+          <Achievements achievements={achievements} />
+        )}
 
         {/* Recent Rides and Leaderboard */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <RecentRides rides={recentRides} />
-          <Leaderboard entries={leaderboard} currentUserRank={4} />
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border mt-16 py-8">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p className="text-sm">
-            Powered by AI Analytics + Blockchain Technology
-          </p>
-          <p className="text-xs mt-2">
-            Ride safe. Earn rewards. Build a safer community.
-          </p>
+          <Leaderboard entries={leaderboard} currentUserRank={leaderboard.findIndex(e => e.user_id === user?.id) + 1 || undefined} />
         </div>
-      </footer>
+      </div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ interface LeaderboardProps {
   currentUserRank?: number;
 }
 
-export const Leaderboard = ({ entries, currentUserRank }: LeaderboardProps) => {
+export const Leaderboard = ({ entries = [], currentUserRank }: LeaderboardProps) => {
   const getRankIcon = (rank: number) => {
     switch(rank) {
       case 1:
